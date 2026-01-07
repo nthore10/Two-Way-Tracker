@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NBA Two-Way Player Game Tracker 2025-26</title>
+    <title>Two-Way Tracker</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@500;600;700&display=swap" rel="stylesheet">
@@ -24,6 +24,7 @@
             --warning: #ffa502;
             --success: #2ed573;
             --safe: #17c0eb;
+            --east-blue: #1e90ff;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -62,85 +63,18 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            margin-bottom: 10px;
         }
 
-        .header .subtitle {
-            font-family: 'Barlow Condensed', sans-serif;
-            font-size: 1.2rem;
-            color: var(--text-secondary);
-            letter-spacing: 2px;
-            text-transform: uppercase;
-        }
-
-        .data-source {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 4px 12px;
-            background: rgba(46, 213, 115, 0.2);
-            border-radius: 20px;
-            font-size: 0.8rem;
-            color: var(--success);
-            margin-top: 10px;
-        }
-
-        .pulse {
-            width: 8px; height: 8px;
-            border-radius: 50%;
-            background: currentColor;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-
-        .stats-overview {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            padding: 30px 0;
-        }
-
-        .stat-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 25px;
-            text-align: center;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-        }
-
-        .stat-card .stat-value {
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 3rem;
-            color: var(--accent-primary);
-        }
-
-        .stat-card .stat-label {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .controls {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
+        .search-container {
             padding: 20px 0;
-            align-items: center;
-            justify-content: space-between;
+            display: flex;
+            justify-content: center;
         }
 
-        .search-box { flex: 1; min-width: 250px; max-width: 400px; }
+        .search-box {
+            width: 100%;
+            max-width: 500px;
+        }
 
         .search-box input {
             width: 100%;
@@ -157,31 +91,6 @@
             outline: none;
             border-color: var(--accent-primary);
             box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.2);
-        }
-
-        .filter-buttons { display: flex; gap: 10px; flex-wrap: wrap; }
-
-        .filter-btn {
-            padding: 10px 20px;
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            background: var(--bg-card);
-            color: var(--text-secondary);
-            font-family: 'Barlow', sans-serif;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .filter-btn:hover {
-            border-color: var(--accent-primary);
-            color: var(--accent-primary);
-        }
-
-        .filter-btn.active {
-            background: var(--accent-gradient);
-            border-color: transparent;
-            color: white;
         }
 
         .team-grid {
@@ -242,8 +151,25 @@
             text-transform: uppercase;
         }
 
-        .team-conf.east { background: rgba(46, 213, 115, 0.2); color: var(--success); }
+        .team-conf.east { background: rgba(30, 144, 255, 0.2); color: var(--east-blue); }
         .team-conf.west { background: rgba(255, 71, 87, 0.2); color: var(--danger); }
+
+        .under15-badge {
+            text-align: right;
+        }
+
+        .under15-value {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.8rem;
+            color: var(--accent-primary);
+            line-height: 1;
+        }
+
+        .under15-label {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
 
         .players-list { padding: 15px; }
 
@@ -335,59 +261,20 @@
             color: var(--text-muted);
         }
 
-        .footer {
-            text-align: center;
-            padding: 20px;
-            border-top: 1px solid var(--border-color);
-            margin-top: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 15px;
-        }
-
-        .footer p { color: var(--text-muted); font-size: 0.9rem; }
-
-        .refresh-btn {
-            padding: 8px 16px;
-            background: var(--accent-gradient);
-            border: none;
-            border-radius: 6px;
-            color: white;
-            font-weight: 600;
-            cursor: pointer;
-            font-size: 0.85rem;
-        }
-
         @media (max-width: 768px) {
             .team-grid { grid-template-columns: 1fr; }
-            .controls { flex-direction: column; align-items: stretch; }
-            .search-box { max-width: 100%; }
         }
     </style>
 </head>
 <body>
     <header class="header">
-        <h1>NBA Two-Way Tracker</h1>
-        <p class="subtitle">2025-26 Season • Active Game Counter</p>
-        <div class="data-source" id="dataSource">
-            <span class="pulse"></span>
-            <span id="lastUpdated">Loading...</span>
-        </div>
+        <h1>Two-Way Tracker</h1>
     </header>
 
     <main class="container">
-        <div class="stats-overview" id="statsOverview"></div>
-
-        <div class="controls">
+        <div class="search-container">
             <div class="search-box">
                 <input type="text" id="searchInput" placeholder="Search players or teams...">
-            </div>
-            <div class="filter-buttons">
-                <button class="filter-btn active" data-filter="all">All Teams</button>
-                <button class="filter-btn" data-filter="east">Eastern</button>
-                <button class="filter-btn" data-filter="west">Western</button>
-                <button class="filter-btn" data-filter="critical">⚠️ Critical</button>
             </div>
         </div>
 
@@ -398,11 +285,6 @@
             </div>
         </div>
     </main>
-
-    <footer class="footer">
-        <p id="footerStatus">Data from Google Sheets</p>
-        <button class="refresh-btn" onclick="fetchData()">🔄 Refresh</button>
-    </footer>
 
     <script>
         // Google Sheets Published CSV URL
@@ -464,8 +346,9 @@
         };
 
         let TWO_WAY_DATA = {};
-        let currentFilter = 'all';
         let searchQuery = '';
+
+        document.addEventListener('DOMContentLoaded', fetchData);
 
         async function fetchData() {
             document.getElementById('content').innerHTML = `
@@ -486,12 +369,8 @@
                 }
                 
                 parseCSV(text);
-                renderStats();
                 renderTeams();
                 setupListeners();
-                
-                document.getElementById('lastUpdated').textContent = 'Updated: ' + new Date().toLocaleTimeString();
-                document.getElementById('footerStatus').textContent = 'Live data from Google Sheets';
                 
             } catch (error) {
                 console.error('Fetch error:', error);
@@ -514,16 +393,12 @@
         function parseCSV(text) {
             TWO_WAY_DATA = {};
             const lines = text.split('\n');
-            console.log('Total lines:', lines.length);
-            console.log('First line (header):', lines[0]);
-            console.log('Second line (first data):', lines[1]);
             
             for (let i = 1; i < lines.length; i++) {
                 const line = lines[i].trim();
                 if (!line) continue;
                 
                 const cols = parseCSVLine(line);
-                console.log('Row', i, 'cols:', cols.length, cols);
                 if (cols.length < 7) continue;
                 
                 const teamAbbr = cols[0]?.trim();
@@ -533,6 +408,8 @@
                 const gamesActive = parseInt(cols[4]) || 0;
                 const gamesAllowed = parseInt(cols[5]) || 50;
                 const gamesRemaining = parseInt(cols[6]) || 0;
+                // Column 8 is "Remaining Under 15 Games"
+                const remainingUnder15 = parseInt(cols[8]) || 0;
                 
                 // Skip header row or invalid data
                 if (!teamAbbr || !playerName || teamAbbr === 'Team Abbr' || teamAbbr.length > 3) continue;
@@ -541,8 +418,14 @@
                     TWO_WAY_DATA[teamAbbr] = {
                         name: teamName || TEAM_NAMES[teamAbbr] || teamAbbr,
                         conf: TEAM_CONFERENCES[teamAbbr] || 'east',
+                        remainingUnder15: remainingUnder15,
                         players: []
                     };
+                }
+                
+                // Update remainingUnder15 if we have a value
+                if (remainingUnder15 > 0) {
+                    TWO_WAY_DATA[teamAbbr].remainingUnder15 = remainingUnder15;
                 }
                 
                 TWO_WAY_DATA[teamAbbr].players.push({
@@ -553,7 +436,6 @@
                     effectiveDate: effectiveDate || ''
                 });
             }
-            console.log('Parsed teams:', Object.keys(TWO_WAY_DATA));
         }
 
         function parseCSVLine(line) {
@@ -582,48 +464,6 @@
                 searchQuery = e.target.value;
                 renderTeams();
             });
-
-            document.querySelectorAll('.filter-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-                    btn.classList.add('active');
-                    currentFilter = btn.dataset.filter;
-                    renderTeams();
-                });
-            });
-        }
-
-        function renderStats() {
-            let totalPlayers = 0, totalGames = 0, warning = 0, critical = 0;
-            
-            for (const team of Object.values(TWO_WAY_DATA)) {
-                for (const p of team.players) {
-                    totalPlayers++;
-                    totalGames += p.gamesPlayed;
-                    const pct = (p.gamesPlayed / p.gamesAllowed) * 100;
-                    if (pct >= 76) critical++;
-                    else if (pct >= 51) warning++;
-                }
-            }
-            
-            document.getElementById('statsOverview').innerHTML = `
-                <div class="stat-card">
-                    <div class="stat-value">${totalPlayers}</div>
-                    <div class="stat-label">Two-Way Players</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value">${totalGames}</div>
-                    <div class="stat-label">Total Games</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value" style="color: var(--warning)">${warning}</div>
-                    <div class="stat-label">Watch (51-75%)</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value" style="color: var(--danger)">${critical}</div>
-                    <div class="stat-label">Critical (76%+)</div>
-                </div>
-            `;
         }
 
         function getStatusClass(pct) {
@@ -644,10 +484,6 @@
         function renderTeams() {
             const content = document.getElementById('content');
             let teams = Object.entries(TWO_WAY_DATA).sort((a, b) => a[1].name.localeCompare(b[1].name));
-            
-            if (currentFilter === 'east') teams = teams.filter(([_, d]) => d.conf === 'east');
-            else if (currentFilter === 'west') teams = teams.filter(([_, d]) => d.conf === 'west');
-            else if (currentFilter === 'critical') teams = teams.filter(([_, d]) => d.players.some(p => (p.gamesPlayed / p.gamesAllowed) * 100 >= 76));
             
             if (searchQuery) {
                 const q = searchQuery.toLowerCase();
@@ -674,6 +510,10 @@
                                 <div class="team-name">${team.name}</div>
                                 <span class="team-conf ${team.conf}">${team.conf}</span>
                             </div>
+                            <div class="under15-badge">
+                                <div class="under15-value">${team.remainingUnder15 || 0}</div>
+                                <div class="under15-label">Remaining Under 15</div>
+                            </div>
                         </div>
                         <div class="players-list">`;
                 
@@ -688,24 +528,26 @@
                         <div class="player-row">
                             <div class="player-info">
                                 <div class="player-name">${p.name}<span class="status-badge ${status}">${statusText}</span></div>
-                                <div class="player-details">${p.gamesRemaining} remaining • Signed ${p.effectiveDate}</div>
-                                <div class="progress-bar"><div class="progress-fill ${status}" style="width: ${Math.min(pct, 100)}%"></div></div>
+                                <div class="player-details">${p.gamesRemaining} games remaining • Signed ${p.effectiveDate}</div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill ${status}" style="width: ${Math.min(pct, 100)}%"></div>
+                                </div>
                             </div>
                             <div class="player-stats">
                                 <div class="games-count" style="color: var(--${status === 'good' ? 'success' : status})">${p.gamesPlayed}</div>
-                                <div class="games-label">of ${p.gamesAllowed}</div>
+                                <div class="games-label">of ${p.gamesAllowed} (${Math.round(pct)}%)</div>
                             </div>
                         </div>`;
                 }
                 
-                html += '</div></div>';
+                html += `
+                        </div>
+                    </div>`;
             }
             
             html += '</div>';
             content.innerHTML = html;
         }
-
-        document.addEventListener('DOMContentLoaded', fetchData);
     </script>
 </body>
 </html>
