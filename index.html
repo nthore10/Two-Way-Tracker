@@ -522,12 +522,11 @@
                 for (const p of sorted) {
                     const pct = (p.gamesPlayed / p.gamesAllowed) * 100;
                     const status = getStatusClass(pct);
-                    const statusText = getStatusText(pct);
                     
                     html += `
                         <div class="player-row">
                             <div class="player-info">
-                                <div class="player-name">${p.name}<span class="status-badge ${status}">${statusText}</span></div>
+                                <div class="player-name">${p.name}</div>
                                 <div class="player-details">${p.gamesRemaining} games remaining • Signed ${p.effectiveDate}</div>
                                 <div class="progress-bar">
                                     <div class="progress-fill ${status}" style="width: ${Math.min(pct, 100)}%"></div>
