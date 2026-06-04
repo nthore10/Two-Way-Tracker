@@ -1,552 +1,174 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Two-Way Tracker</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@500;600;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg-primary: #0a0a0f;
-            --bg-secondary: #12121a;
-            --bg-card: #1a1a25;
-            --bg-card-hover: #22222f;
-            --accent-primary: #ff6b35;
-            --accent-secondary: #f7931a;
-            --accent-gradient: linear-gradient(135deg, #ff6b35 0%, #f7931a 100%);
-            --text-primary: #ffffff;
-            --text-secondary: #a0a0b0;
-            --text-muted: #606070;
-            --border-color: #2a2a3a;
-            --danger: #ff4757;
-            --warning: #ffa502;
-            --success: #2ed573;
-            --safe: #17c0eb;
-            --east-blue: #1e90ff;
-        }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        body {
-            font-family: 'Barlow', sans-serif;
-            background: var(--bg-primary);
-            color: var(--text-primary);
-            min-height: 100vh;
-            line-height: 1.5;
-        }
-
-        .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
-
-        .header {
-            text-align: center;
-            padding: 40px 20px;
-            background: linear-gradient(180deg, var(--bg-secondary) 0%, var(--bg-primary) 100%);
-            border-bottom: 1px solid var(--border-color);
-            position: relative;
-        }
-
-        .header::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0;
-            height: 3px;
-            background: var(--accent-gradient);
-        }
-
-        .header h1 {
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: clamp(2.5rem, 6vw, 4rem);
-            letter-spacing: 4px;
-            background: var(--accent-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .search-container {
-            padding: 20px 0;
-            display: flex;
-            justify-content: center;
-        }
-
-        .search-box {
-            width: 100%;
-            max-width: 500px;
-        }
-
-        .search-box input {
-            width: 100%;
-            padding: 14px 20px;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            background: var(--bg-card);
-            color: var(--text-primary);
-            font-size: 1rem;
-            font-family: 'Barlow', sans-serif;
-        }
-
-        .search-box input:focus {
-            outline: none;
-            border-color: var(--accent-primary);
-            box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.2);
-        }
-
-        .team-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
-            gap: 25px;
-            padding: 20px 0;
-        }
-
-        .team-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            overflow: hidden;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-
-        .team-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 40px rgba(0,0,0,0.4);
-        }
-
-        .team-header {
-            padding: 20px;
-            background: var(--bg-secondary);
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .team-logo {
-            width: 50px; height: 50px;
-            border-radius: 10px;
-            background: var(--bg-card);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-        }
-
-        .team-logo img { width: 100%; height: 100%; object-fit: contain; }
-
-        .team-info { flex: 1; }
-
-        .team-name {
-            font-family: 'Barlow Condensed', sans-serif;
-            font-size: 1.4rem;
-            font-weight: 700;
-            letter-spacing: 1px;
-        }
-
-        .team-conf {
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-transform: uppercase;
-        }
-
-        .team-conf.east { background: rgba(30, 144, 255, 0.2); color: var(--east-blue); }
-        .team-conf.west { background: rgba(255, 71, 87, 0.2); color: var(--danger); }
-
-        .under15-badge {
-            text-align: right;
-        }
-
-        .under15-value {
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 1.8rem;
-            color: var(--accent-primary);
-            line-height: 1;
-        }
-
-        .under15-label {
-            font-size: 0.7rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-        }
-
-        .players-list { padding: 15px; }
-
-        .player-row {
-            display: flex;
-            align-items: center;
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 10px;
-            background: var(--bg-secondary);
-            transition: background 0.2s;
-        }
-
-        .player-row:last-child { margin-bottom: 0; }
-        .player-row:hover { background: var(--bg-card-hover); }
-
-        .player-info { flex: 1; }
-
-        .player-name {
-            font-weight: 600;
-            font-size: 1.1rem;
-            margin-bottom: 4px;
-        }
-
-        .player-details {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-        }
-
-        .player-stats { text-align: right; }
-
-        .games-count {
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 1.8rem;
-            line-height: 1;
-        }
-
-        .games-label {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-        }
-
-        .progress-bar {
-            width: 100%;
-            height: 6px;
-            background: var(--bg-primary);
-            border-radius: 3px;
-            margin-top: 10px;
-            overflow: hidden;
-        }
-
-        .progress-fill { height: 100%; border-radius: 3px; }
-        .progress-fill.safe { background: var(--safe); }
-        .progress-fill.good { background: var(--success); }
-        .progress-fill.warning { background: var(--warning); }
-        .progress-fill.danger { background: var(--danger); }
-
-        .status-badge {
-            display: inline-block;
-            padding: 3px 10px;
-            border-radius: 15px;
-            font-size: 0.7rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            margin-left: 10px;
-        }
-
-        .status-badge.safe { background: rgba(23, 192, 235, 0.2); color: var(--safe); }
-        .status-badge.good { background: rgba(46, 213, 115, 0.2); color: var(--success); }
-        .status-badge.warning { background: rgba(255, 165, 2, 0.2); color: var(--warning); }
-        .status-badge.danger { background: rgba(255, 71, 87, 0.2); color: var(--danger); }
-
-        .loading { text-align: center; padding: 60px 20px; }
-
-        .loading-spinner {
-            width: 50px; height: 50px;
-            border: 4px solid var(--border-color);
-            border-top-color: var(--accent-primary);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 20px;
-        }
-
-        @keyframes spin { to { transform: rotate(360deg); } }
-
-        .empty-state {
-            text-align: center;
-            padding: 60px 20px;
-            color: var(--text-muted);
-        }
-
-        @media (max-width: 768px) {
-            .team-grid { grid-template-columns: 1fr; }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Two-Way Tracker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --primary:#0A0A0A;--accent:#C8102E;--accent-light:#FFF0F2;--surface:#FFFFFF;
+    --surface-2:#F5F4F0;--surface-3:#EDECEA;--ink:#0A0A0A;--ink-secondary:#5A5A5A;
+    --ink-muted:#9A9A9A;--border:rgba(0,0,0,0.10);--border-strong:rgba(0,0,0,0.22);
+    --success:#1A7A4A;--success-bg:#EBF8F1;--info:#1E5FA8;--info-bg:#EBF2FC;
+    --warning:#A06B00;--warning-bg:#FEF6E0;
+    --font-display:'Bebas Neue',sans-serif;--font-body:'DM Sans',sans-serif;--font-mono:'DM Mono',monospace;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:var(--font-body);background:var(--surface-2);color:var(--ink);min-height:100vh;}
+  .masthead{background:var(--primary);padding:20px 24px 18px;display:flex;align-items:center;justify-content:center;text-align:center;border-bottom:3px solid var(--accent);}
+  .masthead-wordmark{font-family:var(--font-display);font-size:32px;color:#fff;letter-spacing:1.5px;line-height:1;}
+  .masthead-wordmark span{color:var(--accent);}
+  .masthead-sub{font-family:var(--font-mono);font-size:10px;color:rgba(255,255,255,0.45);letter-spacing:2px;padding-bottom:3px;}
+  .search-bar{padding:14px 24px;background:var(--surface);border-bottom:1px solid var(--border);}
+  .search-bar input{font-family:var(--font-body);font-size:13px;padding:8px 14px;border:1px solid var(--border-strong);border-radius:6px;background:var(--surface);color:var(--ink);outline:none;width:100%;max-width:400px;transition:border-color .15s;}
+  .search-bar input:focus{border-color:var(--accent);}
+  .loading{text-align:center;padding:80px 20px;}
+  .loading-spinner{width:36px;height:36px;border:3px solid var(--surface-3);border-top:3px solid var(--accent);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 14px;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  .loading p{font-family:var(--font-mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--ink-muted);}
+  .container{max-width:1400px;margin:0 auto;padding:20px 16px;}
+  .team-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:16px;}
+  .team-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+  .team-header{padding:16px 18px;background:var(--surface);border-bottom:2px solid var(--accent);display:flex;align-items:center;gap:12px;}
+  .team-logo-wrap{width:40px;height:40px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .team-logo-wrap img{width:100%;height:100%;object-fit:contain;}
+  .team-info{flex:1;}
+  .team-name{font-family:var(--font-display);font-size:20px;letter-spacing:.5px;color:var(--ink);line-height:1.1;}
+  .conf-badge{display:inline-block;font-family:var(--font-mono);font-size:8px;letter-spacing:1.5px;text-transform:uppercase;padding:2px 7px;border-radius:3px;margin-top:3px;}
+  .conf-badge.east{background:var(--info-bg);color:var(--info);}
+  .conf-badge.west{background:var(--accent-light);color:var(--accent);}
+  .under15-box{text-align:right;}
+  .under15-value{font-family:var(--font-display);font-size:28px;color:var(--accent);line-height:1;}
+  .under15-label{font-family:var(--font-mono);font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink-muted);}
+  .players-list{padding:12px;}
+  .player-row{display:flex;align-items:center;padding:12px;border-radius:6px;margin-bottom:8px;background:var(--surface-2);transition:background .15s;}
+  .player-row:last-child{margin-bottom:0;}
+  .player-row:hover{background:var(--surface-3);}
+  .player-info{flex:1;}
+  .player-name{font-weight:600;font-size:14px;margin-bottom:3px;}
+  .player-details{font-family:var(--font-mono);font-size:10px;color:var(--ink-muted);}
+  .player-stats{text-align:right;}
+  .games-count{font-family:var(--font-display);font-size:24px;line-height:1;}
+  .games-label{font-family:var(--font-mono);font-size:10px;color:var(--ink-muted);}
+  .progress-bar{width:100%;height:5px;background:var(--surface-3);border-radius:3px;margin-top:8px;overflow:hidden;}
+  .progress-fill{height:100%;border-radius:3px;}
+  .progress-fill.safe{background:var(--info);}
+  .progress-fill.good{background:var(--success);}
+  .progress-fill.warning{background:var(--warning);}
+  .progress-fill.danger{background:var(--accent);}
+  .games-count.safe{color:var(--info);}
+  .games-count.good{color:var(--success);}
+  .games-count.warning{color:var(--warning);}
+  .games-count.danger{color:var(--accent);}
+  .empty-state{text-align:center;padding:60px;color:var(--ink-muted);font-family:var(--font-mono);font-size:11px;letter-spacing:2px;text-transform:uppercase;}
+  @media(max-width:768px){.team-grid{grid-template-columns:1fr;}}
+</style>
 </head>
 <body>
-    <header class="header">
-        <h1>Two-Way Tracker</h1>
-    </header>
 
-    <main class="container">
-        <div class="search-container">
-            <div class="search-box">
-                <input type="text" id="searchInput" placeholder="Search players or teams...">
-            </div>
+<div class="masthead">
+  <div class="masthead-wordmark">TWO-WAY <span>TRACKER</span></div>
+  
+</div>
+
+<div class="search-bar">
+  <input type="text" id="searchInput" placeholder="Search players or teams...">
+</div>
+
+<div class="container">
+  <div id="content">
+    <div class="loading">
+      <div class="loading-spinner"></div>
+      <p>Fetching data...</p>
+    </div>
+  </div>
+</div>
+
+<script>
+const CSV_URL='https://docs.google.com/spreadsheets/d/e/2PACX-1vRTwTOS_rNBYI8d8zDUivGFWXsXcxlOZgrqn5o-WCvFC5aNAR3vLsSqllE7aO0BRw/pub?gid=164590079&single=true&output=csv';
+const nbaIds={ATL:1610612737,BOS:1610612738,BKN:1610612751,CHA:1610612766,CHI:1610612741,CLE:1610612739,DAL:1610612742,DEN:1610612743,DET:1610612765,GSW:1610612744,HOU:1610612745,IND:1610612754,LAC:1610612746,LAL:1610612747,MEM:1610612763,MIA:1610612748,MIL:1610612749,MIN:1610612750,NOP:1610612740,NYK:1610612752,OKC:1610612760,ORL:1610612753,PHI:1610612755,PHX:1610612756,POR:1610612757,SAC:1610612758,SAS:1610612759,TOR:1610612761,UTA:1610612762,WAS:1610612764};
+function logoUrl(abbr){const id=nbaIds[abbr];return id?`https://cdn.nba.com/logos/nba/${id}/global/L/logo.svg`:'';}
+const TEAM_CONFERENCES={ATL:'east',BOS:'east',BKN:'east',CHA:'east',CHI:'east',CLE:'east',DET:'east',IND:'east',MIA:'east',MIL:'east',NYK:'east',ORL:'east',PHI:'east',TOR:'east',WAS:'east',DAL:'west',DEN:'west',GSW:'west',HOU:'west',LAC:'west',LAL:'west',MEM:'west',MIN:'west',NOP:'west',OKC:'west',PHX:'west',POR:'west',SAC:'west',SAS:'west',UTA:'west'};
+const TEAM_NAMES={ATL:'Atlanta Hawks',BOS:'Boston Celtics',BKN:'Brooklyn Nets',CHA:'Charlotte Hornets',CHI:'Chicago Bulls',CLE:'Cleveland Cavaliers',DAL:'Dallas Mavericks',DEN:'Denver Nuggets',DET:'Detroit Pistons',GSW:'Golden State Warriors',HOU:'Houston Rockets',IND:'Indiana Pacers',LAC:'Los Angeles Clippers',LAL:'Los Angeles Lakers',MEM:'Memphis Grizzlies',MIA:'Miami Heat',MIL:'Milwaukee Bucks',MIN:'Minnesota Timberwolves',NOP:'New Orleans Pelicans',NYK:'New York Knicks',OKC:'Oklahoma City Thunder',ORL:'Orlando Magic',PHI:'Philadelphia 76ers',PHX:'Phoenix Suns',POR:'Portland Trail Blazers',SAC:'Sacramento Kings',SAS:'San Antonio Spurs',TOR:'Toronto Raptors',UTA:'Utah Jazz',WAS:'Washington Wizards'};
+
+let TWO_WAY_DATA={},searchQuery='';
+
+function getStatus(pct){if(pct>=76)return'danger';if(pct>=51)return'warning';if(pct>=26)return'good';return'safe';}
+
+function parseCSVLine(line){const r=[];let cur='',inQ=false;for(let i=0;i<line.length;i++){const c=line[i];if(inQ){if(c==='"'&&line[i+1]==='"'){cur+='"';i++;}else if(c==='"')inQ=false;else cur+=c;}else{if(c==='"')inQ=true;else if(c===','){r.push(cur);cur='';}else cur+=c;}}r.push(cur);return r;}
+
+function parseCSV(text){
+  TWO_WAY_DATA={};
+  const lines=text.split('\n');
+  for(let i=1;i<lines.length;i++){
+    const line=lines[i].trim();if(!line)continue;
+    const cols=parseCSVLine(line);if(cols.length<7)continue;
+    const teamAbbr=cols[0]?.trim(),teamName=cols[1]?.trim(),playerName=cols[2]?.trim();
+    const effectiveDate=cols[3]?.trim(),gamesActive=parseInt(cols[4])||0,gamesAllowed=parseInt(cols[5])||50,gamesRemaining=parseInt(cols[6])||0;
+    const remainingUnder15=parseInt(cols[8])||0;
+    if(!teamAbbr||!playerName||teamAbbr==='Team Abbr'||teamAbbr.length>3)continue;
+    if(!TWO_WAY_DATA[teamAbbr]){TWO_WAY_DATA[teamAbbr]={name:teamName||TEAM_NAMES[teamAbbr]||teamAbbr,conf:TEAM_CONFERENCES[teamAbbr]||'east',remainingUnder15,players:[]};}
+    if(remainingUnder15>0)TWO_WAY_DATA[teamAbbr].remainingUnder15=remainingUnder15;
+    TWO_WAY_DATA[teamAbbr].players.push({name:playerName,gamesPlayed:gamesActive,gamesAllowed,gamesRemaining,effectiveDate:effectiveDate||''});
+  }
+}
+
+function renderTeams(){
+  const content=document.getElementById('content');
+  let teams=Object.entries(TWO_WAY_DATA).sort((a,b)=>a[1].name.localeCompare(b[1].name));
+  if(searchQuery){const q=searchQuery.toLowerCase();teams=teams.filter(([abbr,d])=>d.name.toLowerCase().includes(q)||abbr.toLowerCase().includes(q)||d.players.some(p=>p.name.toLowerCase().includes(q)));}
+  if(!teams.length){content.innerHTML='<div class="empty-state">No teams found</div>';return;}
+  let html='<div class="team-grid">';
+  for(const[abbr,team]of teams){
+    const logo=logoUrl(abbr);
+    html+=`<div class="team-card">
+      <div class="team-header">
+        <div class="team-logo-wrap"><img src="${logo}" alt="${abbr}" onerror="this.style.display='none'"></div>
+        <div class="team-info">
+          <div class="team-name">${team.name}</div>
+          <span class="conf-badge ${team.conf}">${team.conf.toUpperCase()}</span>
         </div>
-
-        <div id="content">
-            <div class="loading">
-                <div class="loading-spinner"></div>
-                <p>Fetching data from Google Sheets...</p>
-            </div>
+        <div class="under15-box">
+          <div class="under15-value">${team.remainingUnder15||0}</div>
+          <div class="under15-label">Under 15 Left</div>
         </div>
-    </main>
+      </div>
+      <div class="players-list">`;
+    const sorted=[...team.players].sort((a,b)=>(b.gamesPlayed/b.gamesAllowed)-(a.gamesPlayed/a.gamesAllowed));
+    for(const p of sorted){
+      const pct=(p.gamesPlayed/p.gamesAllowed)*100;
+      const status=getStatus(pct);
+      html+=`<div class="player-row">
+        <div class="player-info">
+          <div class="player-name">${p.name}</div>
+          <div class="player-details">${p.gamesRemaining} games remaining · Signed ${p.effectiveDate}</div>
+          <div class="progress-bar"><div class="progress-fill ${status}" style="width:${Math.min(pct,100)}%"></div></div>
+        </div>
+        <div class="player-stats">
+          <div class="games-count ${status}">${p.gamesPlayed}</div>
+          <div class="games-label">of ${p.gamesAllowed} (${Math.round(pct)}%)</div>
+        </div>
+      </div>`;
+    }
+    html+=`</div></div>`;
+  }
+  html+='</div>';
+  content.innerHTML=html;
+}
 
-    <script>
-        // Google Sheets Published CSV URL
-        const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRTwTOS_rNBYI8d8zDUivGFWXsXcxlOZgrqn5o-WCvFC5aNAR3vLsSqllE7aO0BRw/pub?gid=164590079&single=true&output=csv';
-
-        const TEAM_LOGOS = {
-            'ATL': 'https://cdn.nba.com/logos/nba/1610612737/global/L/logo.svg',
-            'BOS': 'https://cdn.nba.com/logos/nba/1610612738/global/L/logo.svg',
-            'BKN': 'https://cdn.nba.com/logos/nba/1610612751/global/L/logo.svg',
-            'CHA': 'https://cdn.nba.com/logos/nba/1610612766/global/L/logo.svg',
-            'CHI': 'https://cdn.nba.com/logos/nba/1610612741/global/L/logo.svg',
-            'CLE': 'https://cdn.nba.com/logos/nba/1610612739/global/L/logo.svg',
-            'DAL': 'https://cdn.nba.com/logos/nba/1610612742/global/L/logo.svg',
-            'DEN': 'https://cdn.nba.com/logos/nba/1610612743/global/L/logo.svg',
-            'DET': 'https://cdn.nba.com/logos/nba/1610612765/global/L/logo.svg',
-            'GSW': 'https://cdn.nba.com/logos/nba/1610612744/global/L/logo.svg',
-            'HOU': 'https://cdn.nba.com/logos/nba/1610612745/global/L/logo.svg',
-            'IND': 'https://cdn.nba.com/logos/nba/1610612754/global/L/logo.svg',
-            'LAC': 'https://cdn.nba.com/logos/nba/1610612746/global/L/logo.svg',
-            'LAL': 'https://cdn.nba.com/logos/nba/1610612747/global/L/logo.svg',
-            'MEM': 'https://cdn.nba.com/logos/nba/1610612763/global/L/logo.svg',
-            'MIA': 'https://cdn.nba.com/logos/nba/1610612748/global/L/logo.svg',
-            'MIL': 'https://cdn.nba.com/logos/nba/1610612749/global/L/logo.svg',
-            'MIN': 'https://cdn.nba.com/logos/nba/1610612750/global/L/logo.svg',
-            'NOP': 'https://cdn.nba.com/logos/nba/1610612740/global/L/logo.svg',
-            'NYK': 'https://cdn.nba.com/logos/nba/1610612752/global/L/logo.svg',
-            'OKC': 'https://cdn.nba.com/logos/nba/1610612760/global/L/logo.svg',
-            'ORL': 'https://cdn.nba.com/logos/nba/1610612753/global/L/logo.svg',
-            'PHI': 'https://cdn.nba.com/logos/nba/1610612755/global/L/logo.svg',
-            'PHX': 'https://cdn.nba.com/logos/nba/1610612756/global/L/logo.svg',
-            'POR': 'https://cdn.nba.com/logos/nba/1610612757/global/L/logo.svg',
-            'SAC': 'https://cdn.nba.com/logos/nba/1610612758/global/L/logo.svg',
-            'SAS': 'https://cdn.nba.com/logos/nba/1610612759/global/L/logo.svg',
-            'TOR': 'https://cdn.nba.com/logos/nba/1610612761/global/L/logo.svg',
-            'UTA': 'https://cdn.nba.com/logos/nba/1610612762/global/L/logo.svg',
-            'WAS': 'https://cdn.nba.com/logos/nba/1610612764/global/L/logo.svg'
-        };
-
-        const TEAM_CONFERENCES = {
-            'ATL': 'east', 'BOS': 'east', 'BKN': 'east', 'CHA': 'east', 'CHI': 'east',
-            'CLE': 'east', 'DET': 'east', 'IND': 'east', 'MIA': 'east', 'MIL': 'east',
-            'NYK': 'east', 'ORL': 'east', 'PHI': 'east', 'TOR': 'east', 'WAS': 'east',
-            'DAL': 'west', 'DEN': 'west', 'GSW': 'west', 'HOU': 'west', 'LAC': 'west',
-            'LAL': 'west', 'MEM': 'west', 'MIN': 'west', 'NOP': 'west', 'OKC': 'west',
-            'PHX': 'west', 'POR': 'west', 'SAC': 'west', 'SAS': 'west', 'UTA': 'west'
-        };
-
-        const TEAM_NAMES = {
-            'ATL': 'Atlanta Hawks', 'BOS': 'Boston Celtics', 'BKN': 'Brooklyn Nets',
-            'CHA': 'Charlotte Hornets', 'CHI': 'Chicago Bulls', 'CLE': 'Cleveland Cavaliers',
-            'DAL': 'Dallas Mavericks', 'DEN': 'Denver Nuggets', 'DET': 'Detroit Pistons',
-            'GSW': 'Golden State Warriors', 'HOU': 'Houston Rockets', 'IND': 'Indiana Pacers',
-            'LAC': 'Los Angeles Clippers', 'LAL': 'Los Angeles Lakers', 'MEM': 'Memphis Grizzlies',
-            'MIA': 'Miami Heat', 'MIL': 'Milwaukee Bucks', 'MIN': 'Minnesota Timberwolves',
-            'NOP': 'New Orleans Pelicans', 'NYK': 'New York Knicks', 'OKC': 'Oklahoma City Thunder',
-            'ORL': 'Orlando Magic', 'PHI': 'Philadelphia 76ers', 'PHX': 'Phoenix Suns',
-            'POR': 'Portland Trail Blazers', 'SAC': 'Sacramento Kings', 'SAS': 'San Antonio Spurs',
-            'TOR': 'Toronto Raptors', 'UTA': 'Utah Jazz', 'WAS': 'Washington Wizards'
-        };
-
-        let TWO_WAY_DATA = {};
-        let searchQuery = '';
-
-        document.addEventListener('DOMContentLoaded', fetchData);
-
-        async function fetchData() {
-            document.getElementById('content').innerHTML = `
-                <div class="loading">
-                    <div class="loading-spinner"></div>
-                    <p>Fetching data from Google Sheets...</p>
-                </div>
-            `;
-
-            try {
-                const response = await fetch(CSV_URL);
-                if (!response.ok) throw new Error('HTTP ' + response.status);
-                
-                const text = await response.text();
-                
-                if (text.trim().startsWith('<!') || text.trim().startsWith('<html')) {
-                    throw new Error('Received HTML instead of CSV - sheet may not be published');
-                }
-                
-                parseCSV(text);
-                renderTeams();
-                setupListeners();
-                
-            } catch (error) {
-                console.error('Fetch error:', error);
-                document.getElementById('content').innerHTML = `
-                    <div class="empty-state">
-                        <h3>Unable to load data</h3>
-                        <p>Error: ${error.message}</p>
-                        <p style="margin-top: 15px; color: var(--text-muted);">
-                            Make sure the Google Sheet is published to web.<br>
-                            Go to File → Share → Publish to web
-                        </p>
-                        <button onclick="fetchData()" style="margin-top: 20px; padding: 12px 24px; background: var(--accent-gradient); border: none; border-radius: 8px; color: white; font-weight: 600; cursor: pointer;">
-                            Try Again
-                        </button>
-                    </div>
-                `;
-            }
-        }
-
-        function parseCSV(text) {
-            TWO_WAY_DATA = {};
-            const lines = text.split('\n');
-            
-            for (let i = 1; i < lines.length; i++) {
-                const line = lines[i].trim();
-                if (!line) continue;
-                
-                const cols = parseCSVLine(line);
-                if (cols.length < 7) continue;
-                
-                const teamAbbr = cols[0]?.trim();
-                const teamName = cols[1]?.trim();
-                const playerName = cols[2]?.trim();
-                const effectiveDate = cols[3]?.trim();
-                const gamesActive = parseInt(cols[4]) || 0;
-                const gamesAllowed = parseInt(cols[5]) || 50;
-                const gamesRemaining = parseInt(cols[6]) || 0;
-                // Column 8 is "Remaining Under 15 Games"
-                const remainingUnder15 = parseInt(cols[8]) || 0;
-                
-                // Skip header row or invalid data
-                if (!teamAbbr || !playerName || teamAbbr === 'Team Abbr' || teamAbbr.length > 3) continue;
-                
-                if (!TWO_WAY_DATA[teamAbbr]) {
-                    TWO_WAY_DATA[teamAbbr] = {
-                        name: teamName || TEAM_NAMES[teamAbbr] || teamAbbr,
-                        conf: TEAM_CONFERENCES[teamAbbr] || 'east',
-                        remainingUnder15: remainingUnder15,
-                        players: []
-                    };
-                }
-                
-                // Update remainingUnder15 if we have a value
-                if (remainingUnder15 > 0) {
-                    TWO_WAY_DATA[teamAbbr].remainingUnder15 = remainingUnder15;
-                }
-                
-                TWO_WAY_DATA[teamAbbr].players.push({
-                    name: playerName,
-                    gamesPlayed: gamesActive,
-                    gamesAllowed: gamesAllowed,
-                    gamesRemaining: gamesRemaining,
-                    effectiveDate: effectiveDate || ''
-                });
-            }
-        }
-
-        function parseCSVLine(line) {
-            const result = [];
-            let current = '';
-            let inQuotes = false;
-            
-            for (let i = 0; i < line.length; i++) {
-                const char = line[i];
-                if (inQuotes) {
-                    if (char === '"' && line[i+1] === '"') { current += '"'; i++; }
-                    else if (char === '"') { inQuotes = false; }
-                    else { current += char; }
-                } else {
-                    if (char === '"') { inQuotes = true; }
-                    else if (char === ',') { result.push(current); current = ''; }
-                    else { current += char; }
-                }
-            }
-            result.push(current);
-            return result;
-        }
-
-        function setupListeners() {
-            document.getElementById('searchInput').addEventListener('input', (e) => {
-                searchQuery = e.target.value;
-                renderTeams();
-            });
-        }
-
-        function getStatusClass(pct) {
-            if (pct >= 76) return 'danger';
-            if (pct >= 51) return 'warning';
-            if (pct >= 26) return 'good';
-            return 'safe';
-        }
-
-        function getStatusText(pct) {
-            if (pct >= 90) return 'CRITICAL';
-            if (pct >= 76) return 'HIGH';
-            if (pct >= 51) return 'WATCH';
-            if (pct >= 26) return 'OK';
-            return 'SAFE';
-        }
-
-        function renderTeams() {
-            const content = document.getElementById('content');
-            let teams = Object.entries(TWO_WAY_DATA).sort((a, b) => a[1].name.localeCompare(b[1].name));
-            
-            if (searchQuery) {
-                const q = searchQuery.toLowerCase();
-                teams = teams.filter(([abbr, d]) => d.name.toLowerCase().includes(q) || abbr.toLowerCase().includes(q) || d.players.some(p => p.name.toLowerCase().includes(q)));
-            }
-            
-            if (teams.length === 0) {
-                content.innerHTML = '<div class="empty-state"><h3>No teams found</h3></div>';
-                return;
-            }
-            
-            let html = '<div class="team-grid">';
-            
-            for (const [abbr, team] of teams) {
-                const logo = TEAM_LOGOS[abbr] || '';
-                
-                html += `
-                    <div class="team-card">
-                        <div class="team-header">
-                            <div class="team-logo">
-                                <img src="${logo}" alt="${abbr}" onerror="this.style.display='none';this.parentElement.textContent='${abbr}';">
-                            </div>
-                            <div class="team-info">
-                                <div class="team-name">${team.name}</div>
-                                <span class="team-conf ${team.conf}">${team.conf}</span>
-                            </div>
-                            <div class="under15-badge">
-                                <div class="under15-value">${team.remainingUnder15 || 0}</div>
-                                <div class="under15-label">Remaining Under 15</div>
-                            </div>
-                        </div>
-                        <div class="players-list">`;
-                
-                const sorted = [...team.players].sort((a, b) => (b.gamesPlayed / b.gamesAllowed) - (a.gamesPlayed / a.gamesAllowed));
-                
-                for (const p of sorted) {
-                    const pct = (p.gamesPlayed / p.gamesAllowed) * 100;
-                    const status = getStatusClass(pct);
-                    
-                    html += `
-                        <div class="player-row">
-                            <div class="player-info">
-                                <div class="player-name">${p.name}</div>
-                                <div class="player-details">${p.gamesRemaining} games remaining • Signed ${p.effectiveDate}</div>
-                                <div class="progress-bar">
-                                    <div class="progress-fill ${status}" style="width: ${Math.min(pct, 100)}%"></div>
-                                </div>
-                            </div>
-                            <div class="player-stats">
-                                <div class="games-count" style="color: var(--${status === 'good' ? 'success' : status})">${p.gamesPlayed}</div>
-                                <div class="games-label">of ${p.gamesAllowed} (${Math.round(pct)}%)</div>
-                            </div>
-                        </div>`;
-                }
-                
-                html += `
-                        </div>
-                    </div>`;
-            }
-            
-            html += '</div>';
-            content.innerHTML = html;
-        }
-    </script>
+document.addEventListener('DOMContentLoaded',async()=>{
+  try{
+    const resp=await fetch(CSV_URL);
+    if(!resp.ok)throw new Error('HTTP '+resp.status);
+    parseCSV(await resp.text());
+    renderTeams();
+    document.getElementById('searchInput').addEventListener('input',e=>{searchQuery=e.target.value;renderTeams();});
+  }catch(err){
+    document.getElementById('content').innerHTML=`<div class="empty-state">Unable to load data: ${err.message}</div>`;
+  }
+});
+</script>
 </body>
 </html>
